@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RadioButton
@@ -124,19 +125,20 @@ class MainActivity : Activity() {
 
     private fun productRow(product: Product): View {
         val row = LinearLayout(this)
-        row.orientation = LinearLayout.VERTICAL
+        row.orientation = LinearLayout.HORIZONTAL
         row.setPadding(dp(18), dp(16), dp(18), dp(16))
         row.background = roundedBackground(Color.WHITE, dp(12), Color.rgb(225, 228, 232))
-        row.addView(text(product.name, 18f, Typeface.BOLD, Color.rgb(31, 35, 40)))
-        row.addView(text(product.description, 14f, Typeface.NORMAL, Color.rgb(92, 101, 112)))
-        row.addView(text(product.formattedPrice(), 17f, Typeface.BOLD, Color.rgb(28, 94, 70)))
-        row.addView(stockText(product.inStock))
+
+        row.addView(productImage(product))
+        row.addView(productInfo(product))
+
         row.setOnClickListener {
             val intent = Intent(this, DetailActivity::class.java).apply {
                 putExtra(DetailActivity.EXTRA_NAME, product.name)
                 putExtra(DetailActivity.EXTRA_DESCRIPTION, product.description)
                 putExtra(DetailActivity.EXTRA_PRICE, product.formattedPrice())
                 putExtra(DetailActivity.EXTRA_STOCK, product.inStock)
+                putExtra(DetailActivity.EXTRA_IMAGE_RES, productImageRes(product))
             }
             startActivity(intent)
         }
@@ -148,6 +150,28 @@ class MainActivity : Activity() {
         params.setMargins(0, dp(12), 0, 0)
         row.layoutParams = params
         return row
+    }
+
+    private fun productImage(product: Product): ImageView {
+        return ImageView(this).apply {
+            setImageResource(productImageRes(product))
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            background = roundedBackground(Color.rgb(241, 244, 248), dp(10), Color.TRANSPARENT)
+            layoutParams = LinearLayout.LayoutParams(dp(84), dp(84)).apply {
+                setMargins(0, 0, dp(14), 0)
+            }
+        }
+    }
+
+    private fun productInfo(product: Product): LinearLayout {
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(text(product.name, 18f, Typeface.BOLD, Color.rgb(31, 35, 40)))
+            addView(text(product.description, 14f, Typeface.NORMAL, Color.rgb(92, 101, 112)))
+            addView(text(product.formattedPrice(), 17f, Typeface.BOLD, Color.rgb(28, 94, 70)))
+            addView(stockText(product.inStock))
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        }
     }
 
     private fun searchBox(): EditText {
@@ -245,6 +269,15 @@ class MainActivity : Activity() {
     }
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+
+    private fun productImageRes(product: Product): Int {
+        return when (product.id) {
+            1 -> R.drawable.product_iphone
+            2 -> R.drawable.product_samsung
+            3 -> R.drawable.product_pixel
+            else -> R.drawable.product_pixel
+        }
+    }
 
     private enum class StockFilter {
         ALL,
