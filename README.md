@@ -25,3 +25,16 @@ Tambien se puede compilar desde terminal con:
 ```powershell
 .\gradlew.bat assembleDebug
 ```
+
+## Tests
+
+La app incluye tests unitarios para validar la logica de presentacion del listado de productos:
+
+- Con productos disponibles, se puede mostrar informacion en pantalla.
+- Con listado vacio, no se muestra informacion de productos.
+
+Para ejecutarlos:
+
+```powershell
+.\gradlew.bat testDebugUnitTest
+```
