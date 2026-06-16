@@ -98,17 +98,18 @@ class MainActivity : Activity() {
             }
             matchesSearch && matchesStock
         }
+        val state = ProductListUiState.from(filteredProducts)
 
         productList.addView(
             text(
-                "${filteredProducts.size} productos encontrados",
+                "${state.items.size} productos encontrados",
                 14f,
                 Typeface.BOLD,
                 Color.rgb(92, 101, 112)
             )
         )
 
-        if (filteredProducts.isEmpty()) {
+        if (!state.canShowProducts) {
             productList.addView(emptyState())
             return
         }
